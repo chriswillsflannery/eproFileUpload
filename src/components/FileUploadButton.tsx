@@ -1,4 +1,5 @@
 'use client'
+import { Document, Page } from 'react-pdf';
 import { FileWithId } from '@/types/file';
 import { makeGPTRequest } from '@/util/makeOAPIrequest';
 import { postJsonToStudies } from '@/util/postJsonToStudies';
@@ -35,9 +36,8 @@ export const FileUploadButton: FC<FileUploadButtonProps> = ({
       return;
     }
 
-    const filesWithIdToBeUploaded = Array.from(filesToBeUploaded)
-
-    const strings = await tesseractProcessFile(filesWithIdToBeUploaded[0], setIsProcessingWithTesseract);
+    console.log('files2b', filesToBeUploaded);
+    const strings = await tesseractProcessFile(filesToBeUploaded[0], setIsProcessingWithTesseract);
 
     const jsonStruct = await makeGPTRequest(strings, setIsProcessingWithOAPI);
 
@@ -47,12 +47,15 @@ export const FileUploadButton: FC<FileUploadButtonProps> = ({
     }
 
     // strip newline chars from json response
-    const jsonString = JSON.stringify(JSON.parse(jsonStruct.choices[0].message.content));
+    // const jsonString = JSON.stringify(JSON.parse(jsonStruct.choices[0].message.content));
 
-    console.log('jsonstring', jsonString);
+    // console.log('jsonstring', jsonString);
+    const jsonstring = jsonStruct.choices[0].message.content;
+    const removedWithTrim = jsonstring.trim()
+    let removedWithReplace = removedWithTrim.replace(/(\r\n|\n|\r)/gm, "");
 
     // send jsonStruct to Studies
-    await postJsonToStudies(jsonString)
+    await postJsonToStudies(removedWithReplace)
   }
 
   return (

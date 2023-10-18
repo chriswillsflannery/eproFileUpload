@@ -1,6 +1,6 @@
 import { OpenAI } from 'openai';
 
-const OPENAI_API_KEY = "FAKE KEY ! GOES HER !";
+const OPENAI_API_KEY = "KEY HERE!";
 
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY, dangerouslyAllowBrowser: true });
 
